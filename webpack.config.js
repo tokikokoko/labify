@@ -7,7 +7,7 @@ module.exports = {
   mode: "development",
   target: "electron-renderer",
   // メインとなるJavaScriptファイル（エントリーポイント）
-  entry: "./src/main.tsx",
+  entry: "./src/index.tsx",
   // ファイルの出力設定
   output: {
     //  出力ファイルのディレクトリ名
