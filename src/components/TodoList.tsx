@@ -1,5 +1,7 @@
 import React, { useState, useEffect, FormEvent } from 'react';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import clsx from 'clsx';
+import useInterval from 'use-interval'
 import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
@@ -15,7 +17,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import {getTodos, doneTodos, Todo} from '@/api/todo';
+import { RootState } from '@/store/rootReducer';
+import {doneTodo, fetchTodos, Todo} from '@/api/todo';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,37 +34,37 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const removeTodo = (todos: Array<Todo>, id: number): Array<Todo> => {
-  return todos.filter((value) => value.id === id ? false : true);
-}
-
 export interface TodoListProps {
 }
 
 export const TodoList = (props: TodoListProps) => {
   const classes = useStyles();
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch()
+  const { loading, todos } = useSelector(
+    (state: RootState) => {
+      return {
+        loading: state.todos.loading,
+        todos: state.todos.todos,
+      }
+    },
+    shallowEqual
+  );
+  useEffect(() => {
+    dispatch(fetchTodos());
+  }, []);
+  useInterval(() => {
+    dispatch(fetchTodos());
+  }, 30 * 1000);
 
   const done = async (event: FormEvent) => {
     const rawId = event.currentTarget.getAttribute('todo-id');
     if (typeof rawId === 'string') {
       const id = parseInt(rawId);
-      await doneTodos(id);
-      setTodos(removeTodo(todos, id));
+      dispatch(doneTodo(id));
     } else {
       console.error('Not id: ', rawId);
     };
   }
-
-  useEffect(() => {
-    getTodos()
-      .then((items) => {
-        console.info("Success: ", items);
-        setTodos(items);
-        setLoading(false);
-      });
-  }, []);
 
   const itemContent = (todo: Todo) => {
     return (
@@ -73,7 +76,7 @@ export const TodoList = (props: TodoListProps) => {
           />
         </ListItemAvatar>
         <ListItemText
-          primary={`${todo.action_name} by ${todo.author.username}`}
+          primary={`${todo.action_name} by ${todo.author.name}(${todo.author.username})`}
           secondary={
            <React.Fragment>
               <Typography
@@ -82,9 +85,8 @@ export const TodoList = (props: TodoListProps) => {
                 className={classes.inline}
                 color="textPrimary"
               >
-                {`${todo.author.name}`}
+              {`${todo.body}`}
               </Typography>
-              {` — ${todo.body}`}
             </React.Fragment>
           }
         >

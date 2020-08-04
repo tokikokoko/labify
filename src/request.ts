@@ -7,7 +7,7 @@ export const callApi = async (req: Request): Promise<Response> => {
   let res = await fetch(req);
   const remainingRateLimit = res.headers.get('ratelimit-remaining');
   res.headers.forEach((value, key, _) => {
-    console.info(`${key}: ${value}`);
+    console.debug(`${key}: ${value}`);
   });
   if (typeof remainingRateLimit === 'string') {
     console.info("Remainning RateLimit: ", remainingRateLimit);

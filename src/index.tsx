@@ -14,6 +14,9 @@ import {TodoList} from '@/components/TodoList';
 import {Settings} from '@/components/Settings';
 import '@/css/default.css';
 
+import { Provider } from 'react-redux';
+import store from '@/store/store';
+
 const theme = createMuiTheme({
   palette: {
     primary: deepOrange,
@@ -53,4 +56,11 @@ export const App: FC = () => {
   );
 }
 
-ReactDOM.render(<App/>, document.querySelector('#app'));
+ReactDOM.render(
+  (
+    <Provider store={store}>
+      <App/>
+    </Provider>
+  ),
+  document.querySelector('#app')
+);

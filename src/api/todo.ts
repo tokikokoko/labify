@@ -1,4 +1,5 @@
-import getConfig from '@/config';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppThunk } from '@/store/store';
 import {callApi, getURL} from '@/request';
 
 export interface Todo {
@@ -22,6 +23,59 @@ export interface Todo {
   },
 }
 
+// Redux
+type TodosState = {
+  todos: Todo[]
+  loading: boolean
+};
+
+const initialState: TodosState = {
+  todos: [],
+  loading: false,
+};
+
+interface TodoLoaded {
+  todos: Todo[]
+};
+
+const todos = createSlice({
+  name: 'todos',
+  initialState,
+  reducers: {
+    getTodosStart(state) {
+      state.loading = true;
+    },
+    getTodosSuccess(state: TodosState, action: PayloadAction<TodoLoaded>) {
+      const { todos } = action.payload;
+      state.todos = todos;
+      state.loading = false;
+    },
+    removeTodo(state: TodosState, action: PayloadAction<Number>) {
+      const id = action.payload;
+      state.todos = state.todos.filter((value) => value.id === id ? false : true);
+    },
+  }
+});
+
+export const {
+  getTodosStart,
+  getTodosSuccess,
+  removeTodo,
+} = todos.actions;
+export default todos.reducer;
+
+export const fetchTodos = (): AppThunk => async dispatch => {
+  dispatch(getTodosStart())
+  const todos = await getTodos();
+  dispatch(getTodosSuccess({ todos: todos }));
+};
+
+export const doneTodo = (id: number): AppThunk => async dispatch => {
+  await doneTodos(id);
+  dispatch(removeTodo(id));
+};
+
+// Api
 export const getTodos = async (): Promise<Array<Todo>> => {
   let items: Array<Todo> = [];
   let res = await callGetTodosApi(null);
