@@ -69,7 +69,7 @@ export const TodoList = (props: TodoListProps) => {
           />
         </ListItemAvatar>
         <ListItemText
-          primary={todo.action_name}
+          primary={`${todo.action_name} by ${todo.author.username}`}
           secondary={
            <React.Fragment>
               <Typography
@@ -78,7 +78,7 @@ export const TodoList = (props: TodoListProps) => {
                 className={classes.inline}
                 color="textPrimary"
               >
-                {`${todo.author.name}(${todo.author.username})`}
+                {`${todo.author.name}`}
               </Typography>
               {` — ${todo.body}`}
             </React.Fragment>
