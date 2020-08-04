@@ -1,4 +1,5 @@
 import React, { ReactNode, Children } from 'react';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -15,8 +16,8 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import ListIcon from '@material-ui/icons/List';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 const drawerWidth = 240;
 
@@ -89,9 +90,10 @@ interface SidebarProps {
   children: ReactNode;
 }
 
-export function Sidebar(props: SidebarProps) {
+export const Sidebar = (props: SidebarProps) => {
   const classes = useStyles();
   const theme = useTheme();
+  const history = useHistory();
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -148,9 +150,13 @@ export function Sidebar(props: SidebarProps) {
         </div>
         <Divider />
         <List>
-          <ListItem button>
-            <ListItemIcon><InboxIcon /></ListItemIcon>
+          <ListItem button onClick={() => history.push('/')}>
+            <ListItemIcon><ListIcon /></ListItemIcon>
             <ListItemText primary="Todos" />
+          </ListItem>
+          <ListItem button onClick={() => history.push('/settings')}>
+            <ListItemIcon><SettingsIcon /></ListItemIcon>
+            <ListItemText primary="Settings" />
           </ListItem>
         </List>
       </Drawer>

@@ -1,10 +1,17 @@
 import React, { FC, useState } from 'react';
 import * as ReactDOM from 'react-dom';
+import {
+  BrowserRouter,
+  Route,
+  Switch,
+  Redirect,
+} from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import {Sidebar} from '@/components/Sidebar';
 import { createMuiTheme, createStyles, makeStyles, useTheme, Theme, ThemeProvider} from '@material-ui/core/styles';
 import { deepOrange } from "@material-ui/core/colors";
 import {TodoList} from '@/components/TodoList';
+import {Settings} from '@/components/Settings';
 import '@/css/default.css';
 
 const theme = createMuiTheme({
@@ -25,9 +32,21 @@ export const App: FC = () => {
     <div>
       <ThemeProvider theme={theme}>
         <Container>
-          <Sidebar name="My Counter for TypeScript">
-            <TodoList />
-          </Sidebar>
+          <BrowserRouter>
+            <Switch>
+              <Sidebar name="My Counter for TypeScript">
+                <Route path="/" exact>
+                  <TodoList />
+                </Route>
+                <Route path="/settings" exact>
+                  <Settings />
+                </Route>
+                <Route exact>
+                  <Redirect to="/" />
+                </Route>
+              </Sidebar>
+            </Switch>
+          </BrowserRouter>
         </Container>
       </ThemeProvider>
     </div>

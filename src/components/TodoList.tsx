@@ -1,6 +1,7 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import clsx from 'clsx';
 import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
@@ -12,6 +13,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {getTodos, doneTodos, Todo} from '@/api/todo';
 
@@ -23,6 +25,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     inline: {
       display: 'inline',
+    },
+    loading: {
     },
   }),
 );
@@ -101,7 +105,11 @@ export const TodoList = (props: TodoListProps) => {
     );
   });
 
-  const loadingElement = (<p>Loading...</p>);
+  const loadingElement = (
+    <Container>
+      <CircularProgress />
+    </Container>
+  );
 
   return (
     <List className={classes.root}>
