@@ -11,7 +11,7 @@ import {Sidebar} from '@/components/Sidebar';
 import { createMuiTheme, createStyles, makeStyles, useTheme, Theme, ThemeProvider} from '@material-ui/core/styles';
 import { deepOrange } from "@material-ui/core/colors";
 import {TodoList} from '@/components/TodoList';
-import {Settings} from '@/components/Settings';
+import { SettingsView } from '@/components/SettingsView';
 import '@/css/default.css';
 
 import { Provider } from 'react-redux';
@@ -42,7 +42,7 @@ export const App: FC = () => {
                   <TodoList />
                 </Route>
                 <Route path="/settings" exact>
-                  <Settings />
+                  <SettingsView />
                 </Route>
                 <Route exact>
                   <Redirect to="/" />

@@ -18,7 +18,8 @@ import Avatar from '@material-ui/core/Avatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { RootState } from '@/store/rootReducer';
-import {doneTodo, fetchTodos, Todo} from '@/api/todo';
+import { doneTodo, fetchTodos, Todo } from '@/api/todo';
+import { fetchSettings } from '@/api/setting';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,27 +41,30 @@ export interface TodoListProps {
 export const TodoList = (props: TodoListProps) => {
   const classes = useStyles();
   const dispatch = useDispatch()
-  const { loading, todos } = useSelector(
+  const { loading, todos, settings } = useSelector(
     (state: RootState) => {
       return {
         loading: state.todos.loading,
         todos: state.todos.todos,
+        settings: state.settings.settings,
       }
     },
     shallowEqual
   );
   useEffect(() => {
-    dispatch(fetchTodos());
+    dispatch(fetchSettings());
+    console.log("DEBUG: settings compo:", settings);
+    dispatch(fetchTodos(settings));
   }, []);
   useInterval(() => {
-    dispatch(fetchTodos());
+    dispatch(fetchTodos(settings));
   }, 30 * 1000);
 
   const done = async (event: FormEvent) => {
     const rawId = event.currentTarget.getAttribute('todo-id');
     if (typeof rawId === 'string') {
       const id = parseInt(rawId);
-      dispatch(doneTodo(id));
+      dispatch(doneTodo(settings, id));
     } else {
       console.error('Not id: ', rawId);
     };

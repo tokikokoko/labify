@@ -22,5 +22,11 @@ app.on('ready', CreateWindow);
 
 ipcMain.handle('get-config', (event) => {
   console.log("Called get config.");
-  return config;
-})
+  return config.loadConfig();
+});
+
+ipcMain.handle('save-config', (event, hostname, apiBasePath, gitlabToken) => {
+  console.log("Called save config.");
+  config.saveConfig(hostname, apiBasePath, gitlabToken);
+  return true;
+});

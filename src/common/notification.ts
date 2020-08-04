@@ -20,3 +20,26 @@ export const notifyMe = () => {
     });
   }
 };
+
+export const notify = async (title: string, body: string, image: string) => {
+  if (!("Notification" in window)) {
+    alert("このブラウザーはデスクトップ通知に対応していません。");
+  }
+  
+  const data: NotificationOptions = {
+    body: body,
+    image: image,
+    icon: image,
+  };
+
+  if (Notification.permission === "granted") {
+      let notification = new Notification(title, data);
+  }
+  else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(function (permission) {
+      if (permission === "granted") {
+        let notification = new Notification(title, data);
+      }
+    });
+  }
+};
