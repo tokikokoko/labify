@@ -9,11 +9,10 @@ const CreateWindow = () => {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      // preload: path.join(__dirname, '/preload.js'),
     },
   });
   mainWindow.loadURL('file://' + __dirname + '/dist/index.html');
-  mainWindow.webContents.openDevTools(); 
+  // mainWindow.webContents.openDevTools(); 
   mainWindow.on('closed', function() {
       mainWindow = null;
   });

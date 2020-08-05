@@ -29,15 +29,18 @@ export interface Todo {
 type TodosState = {
   todos: Todo[]
   loading: boolean
+  initialized: boolean
 };
 
 const initialState: TodosState = {
   todos: [],
   loading: false,
+  initialized: false,
 };
 
 interface TodoLoaded {
   todos: Todo[]
+  firstFetch: boolean
 };
 
 const todos = createSlice({
@@ -48,15 +51,18 @@ const todos = createSlice({
       state.loading = true;
     },
     getTodosSuccess(state: TodosState, action: PayloadAction<TodoLoaded>) {
-      const { todos } = action.payload;
-      todos
-        .filter((value) => !existTodo(state, value))
-        .map((value) => {
-          return value;
-        })
-        .map((value) => notifyTodo(value));
+      const { todos, firstFetch } = action.payload;
+      if (state.initialized) {
+        todos
+          .filter((value) => !existTodo(state, value))
+          .map((value) => {
+            return value;
+          })
+          .map((value) => notifyTodo(value));
+      }
       state.todos = todos;
       state.loading = false;
+      state.initialized = true;
     },
     removeTodo(state: TodosState, action: PayloadAction<Number>) {
       const id = action.payload;
@@ -72,10 +78,10 @@ export const {
 } = todos.actions;
 export default todos.reducer;
 
-export const fetchTodos = (settings: Settings): AppThunk => async dispatch => {
-  dispatch(getTodosStart())
+export const fetchTodos = (settings: Settings, firstFetch: boolean = false): AppThunk => async dispatch => {
+  firstFetch ? dispatch(getTodosStart()) : null;
   const todos = await getTodos(settings);
-  dispatch(getTodosSuccess({ todos: todos }));
+  dispatch(getTodosSuccess({ todos, firstFetch }));
 };
 
 export const doneTodo = (settings: Settings, id: number): AppThunk => async dispatch => {

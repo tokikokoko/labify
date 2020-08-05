@@ -51,11 +51,17 @@ export const TodoList = (props: TodoListProps) => {
     },
     shallowEqual
   );
+
   useEffect(() => {
     dispatch(fetchSettings());
-    console.log("DEBUG: settings compo:", settings);
-    dispatch(fetchTodos(settings));
   }, []);
+
+  useEffect(() => {
+    if (settings.gitlabToken != '') {
+      dispatch(fetchTodos(settings));
+    }
+  }, [settings]);
+
   useInterval(() => {
     dispatch(fetchTodos(settings));
   }, 30 * 1000);
